@@ -1,57 +1,82 @@
-# addon-demo
+# ReadMe
 
-This README outlines the details of collaborating on this Ember application.
-A short introduction of this app could easily go here.
+## Results
 
-## Prerequisites
+See live demo at [codesanbox](https://codesandbox.io/s/github/joefraley/ember-addon-demo)
+```sh
+git clone https://github.com/joefraley/ember-addon-demo.git
+cd ember-addon-demo
+yarn
+...
+yarn start
+open http://localhost:4676/
+```
 
-You will need the following things properly installed on your computer.
+~[](https://www.evernote.com/l/AcQDpVct2opBw7r4WSPmXuUZ7VZVTpK_6wEB/image.png)
 
-* [Git](https://git-scm.com/)
-* [Node.js](https://nodejs.org/) (with npm)
-* [Ember CLI](https://ember-cli.com/)
-* [Google Chrome](https://google.com/chrome/)
+## Structure
 
-## Installation
+Created by...
 
-* `git clone <repository-url>` this repository
-* `cd addon-demo`
-* `npm install`
+```sh
+npm install -g ember-cli
+ember -v 3.9.0
+ember ember-addon-demo
+mkdir ember-addon-demo/packages
+ember addon component-library
+mv component-library ember-addon-demo/packages
+# setup yarn workspace for ember-addon-demo
+# as described here: https://github.com/habdelra/yarn-workface/tree/master/packages/tomorrow
+# ...
+# ...
+cd ember-addon-demo/packages/component-library
+ember generate component button --pod
+# fill in the component code...
+```
 
-## Running / Development
+```sh
+app/
+  templates/
+    application.hbs
+packages/
+  component-library-addon/
+    addon/
+      components/
+        button/
+          component.js
+          template.hbs
+          styles.scss
+    app/
+      components/
+        button/
+          component.js <--- re-export
+```
 
-* `ember serve`
-* Visit your app at [http://localhost:4200](http://localhost:4200).
-* Visit your tests at [http://localhost:4200/tests](http://localhost:4200/tests).
+```js
+// ./packages/betterup-component-library/addon/components/button/component.js
+import Component from '@ember/component';
+import hbs from 'htmlbars-inline-precompile';
+import { tagName, layout } from '@ember-decorators/component';
 
-### Code Generators
+@tagName('')
+@layout(hbs`
+<button class="{{styleNamespace}} {{kind}} {{size}}" onClick={{@onClick}} >
+  {{yield}}
+</button>`)
+export default class Button extends Component {
+  kind = "primary"
+  size = "medium"
+}
+```
 
-Make use of the many generators for code, try `ember help generate` for more details
+```scss
+// ./packages/betterup-component-library/addon/components/button/styles.scss
+&.primary {
+  background: hotpink;
+}
+```
 
-### Running Tests
-
-* `ember test`
-* `ember test --server`
-
-### Linting
-
-* `npm run lint:hbs`
-* `npm run lint:js`
-* `npm run lint:js -- --fix`
-
-### Building
-
-* `ember build` (development)
-* `ember build --environment production` (production)
-
-### Deploying
-
-Specify what it takes to deploy your app.
-
-## Further Reading / Useful Links
-
-* [ember.js](https://emberjs.com/)
-* [ember-cli](https://ember-cli.com/)
-* Development Browser Extensions
-  * [ember inspector for chrome](https://chrome.google.com/webstore/detail/ember-inspector/bmdblncegkenkacieihfhpjfppoconhi)
-  * [ember inspector for firefox](https://addons.mozilla.org/en-US/firefox/addon/ember-inspector/)
+```hbs
+<!-- ./app/templates/application.hbs -->
+<Button kind="primary" size="medium">Click Me</Button>
+```
